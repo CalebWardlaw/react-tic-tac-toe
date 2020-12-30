@@ -3,25 +3,29 @@ import ReactDOM from 'react-dom';
 import './index.css';
 
 //component is independent and reusable bit of code, does the same thing as JS functions but returns HTML via render
-class Square extends React.Component {
-    //Using "stat" to rEmEmBeR that it gets clicked via constructor (like java)
-    //Super is used when defining constructor, it calls it
-    constructor(props) {
-        super(props);
-        this.state = {
-            //Null used because it is not expecting a return value, this is its starting state aka unmarked
-            value: null,
-        };
-    }
-    render() {
-        return (
-            //Event listener, prompts in browser
-            //Setting the state to a char of X (for tic tac toe!)
-            <button className="square" onClick={() => this.setState({value:'X'})}>
-                {this.state.value}
-            </button>
-        );
-    }
+
+//Replaced with function component on 22
+
+// class Square extends React.Component {
+//     //Using "stat" to rEmEmBeR that it gets clicked via constructor (like java)
+//     //Super is used when defining constructor, it calls it
+//     render() {
+//         return (
+//             //Event listener, prompts in browser
+//             //Setting the state to a char of X (for tic tac toe!)
+//             <button className="square" onClick={() => this.props.onClick({value:'X'})}>
+//                 {this.props.value}
+//             </button>
+//         );
+//     }
+// }
+
+function Square(props){
+    return (
+        <button className="square" onClick={props.onClick}>
+            {props.value}
+        </button>
+    )
 }
 
 class Board extends React.Component {
@@ -30,11 +34,23 @@ class Board extends React.Component {
         super(props);
         this.state = {
             squares: Array(9).fill(null),
+            //Setting x to default start
+            xIsNext: true,
         };
+    }
+    //immutability, slice() allows us to copy the array and not change the original
+    handleClick(i){
+        const squares = this.state.squares.slice();
+        squares[i] = this.state.xIsNext ? 'X' : 'O';
+        this.setState({
+            squares: squares,
+            xIsNext: !this.state.xIsNext,
+        });
     }
     renderSquare(i) {
         return (
             <Square
+                //passing to square
                 value={this.state.squares[i]}
                 onClick={() => this.handleClick(i)}
             />
